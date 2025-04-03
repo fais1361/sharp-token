@@ -3,98 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharp Token (SHRP)</title>
+    <title>Sharp Token</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #121212;
-            color: white;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-            margin: auto;
-        }
-        h1 {
-            color: #00d4ff;
+            margin: 50px;
         }
         .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin-top: 20px;
-            text-decoration: none;
+            background-color: #f0b90b;
             color: white;
-            background: #00d4ff;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
             border-radius: 5px;
-            transition: 0.3s;
         }
         .btn:hover {
-            background: #008bbf;
-        }
-        .section {
-            margin-top: 20px;
-            padding: 10px;
-            background: #292929;
-            border-radius: 8px;
-        }
-        .logo {
-            width: 100px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-        .social-links a {
-            margin: 10px;
-            text-decoration: none;
-            color: #00d4ff;
-            font-size: 20px;
-        }
-        .social-links a:hover {
-            color: #008bbf;
+            background-color: #d8a20a;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-       <img src="logo.png" alt="Sharp Token Logo" class="logo">
-        <h1>Welcome to Sharp Token (SHRP)</h1>
-        <p>A decentralized and advanced token on Binance Smart Chain.</p>
-        <a class="btn" href="https://bscscan.com" target="_blank">View on BSCScan</a>
-        <a class="btn" href="whitepaper.pdf" target="_blank">📄 دانلود وایت پیپر</a>
+    <h1>Sharp Token (SHRP)</h1>
+    <button class="btn" onclick="addTokenToWallet()">Add SHRP to MetaMask</button>
+    <a class="btn" href="https://bscscan.com/token/0x697347f8d15bABaD054C84dAe3C8662addaf5c0b" target="_blank">View on BscScan</a>
 
-        
-        <div class="section">
-            <h2>Key Features</h2>
-            <ul style="list-style: none; padding: 0;">
-                <li>✅ Built on Binance Smart Chain</li>
-                <li>✅ Staking and reward system</li>
-                <li>✅ Token burning mechanism</li>
-                <li>✅ High security and transparency</li>
-            </ul>
-        </div>
+    <script>
+        async function addTokenToWallet() {
+            try {
+                const tokenAddress = "0x697347f8d15bABaD054C84dAe3C8662addaf5c0b";
+                const tokenSymbol = "SHRP";
+                const tokenDecimals = 18;
+                const tokenImage = "https://yourwebsite.com/shrp-logo.png"; // Replace with actual logo URL
 
-        <div class="section">
-            <h2>Roadmap</h2>
-            <p>🔹 Listing on PancakeSwap</p>
-            <p>🔹 Staking feature development</p>
-            <p>🔹 Listing on major exchanges</p>
-        </div>
-        
-        <div class="section social-links">
-            <h2>Follow Us</h2>
-            <a href="https://twitter.com" target="_blank">🐦 Twitter</a>
-            <a href="https://t.me" target="_blank">📢 Telegram</a>
-            <a href="https://discord.com" target="_blank">🎮 Discord</a>
-        </div>
-        
-        <a class="btn" href="https://pancakeswap.finance" target="_blank">Buy on PancakeSwap</a>
-    </div>
+                const wasAdded = await window.ethereum.request({
+                    method: "wallet_watchAsset",
+                    params: {
+                        type: "ERC20",
+                        options: {
+                            address: tokenAddress,
+                            symbol: tokenSymbol,
+                            decimals: tokenDecimals,
+                            image: tokenImage,
+                        },
+                    },
+                });
+
+                if (wasAdded) {
+                    alert("SHRP has been added to your wallet!");
+                } else {
+                    alert("Token addition declined.");
+                }
+            } catch (error) {
+                console.error("Error adding token:", error);
+                alert("Error adding token. Check the console for details.");
+            }
+        }
+    </script>
 </body>
 </html>
-
-
