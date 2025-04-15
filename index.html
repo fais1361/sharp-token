@@ -1,36 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharp Token (SHRP)</title>
+    <title>شارپ توکن (SHRP)</title>
     <style>
         :root {
             --primary: #00d4ff;
+            --secondary: #008bbf;
             --dark: #121212;
             --card: #1e1e1e;
             --text: #ffffff;
+            --success: #4CAF50;
+            --error: #f44336;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--dark);
             color: var(--text);
-            margin: 0;
+            line-height: 1.6;
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
         }
         .btn {
             background: var(--primary);
             color: #000;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 25px;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            margin: 10px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary);
+            color: #000;
+        }
+        .wallet-info {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
         }
         .modal {
             display: none;
@@ -58,61 +103,104 @@
             width: 20px;
             height: 20px;
             animation: spin 1s linear infinite;
-            display: inline-block;
+            margin-right: 10px;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        .alert-success {
+            background: var(--success);
+            display: block;
+        }
+        .alert-error {
+            background: var(--error);
+            display: block;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            margin: 10px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Sharp Token (SHRP)</h1>
-        
-        <div class="wallet-section">
-            <button id="connect-metamask" class="btn">
-                <span id="mm-text">Connect MetaMask</span>
-                <span id="mm-loader" class="loading" style="display:none;"></span>
-            </button>
+        <header>
+            <img src="logo.png" alt="لوگوی شارپ توکن" class="logo">
+            <h1>شارپ توکن (SHRP)</h1>
+            <p>یک توکن پیشرفته و غیرمتمرکز در شبکه BSC</p>
             
-            <div id="wallet-info" style="display:none;">
-                <p>Connected: <span id="wallet-address"></span></p>
-                <p>SHRP Balance: <span id="shrp-balance">0</span></p>
-                <button id="transfer-btn" class="btn">Transfer SHRP</button>
+            <div class="wallet-actions">
+                <button id="connect-metamask" class="btn">
+                    <span id="mm-text">اتصال به متامسک</span>
+                    <span id="mm-loader" class="loading" style="display:none;"></span>
+                </button>
+                <button id="connect-walletconnect" class="btn btn-outline">
+                    <span id="wc-text">اتصال به WalletConnect</span>
+                    <span id="wc-loader" class="loading" style="display:none;"></span>
+                </button>
             </div>
-        </div>
+            
+            <div id="wallet-info" class="wallet-info">
+                <p>آدرس کیف پول: <span id="wallet-address"></span></p>
+                <p>موجودی SHRP: <span id="shrp-balance">0</span></p>
+                <p>موجودی BNB: <span id="bnb-balance">0</span></p>
+                <button id="transfer-btn" class="btn">انتقال SHRP</button>
+                <button id="add-token-btn" class="btn btn-outline">افزودن توکن به کیف پول</button>
+            </div>
+        </header>
+
+        <div id="alert-box"></div>
+
+        <!-- سایر بخش‌های وبسایت -->
     </div>
 
-    <!-- Transfer Modal -->
+    <!-- مدال انتقال -->
     <div id="transfer-modal" class="modal">
         <div class="modal-content">
-            <h2>Transfer SHRP</h2>
+            <h2>انتقال SHRP</h2>
+            <div id="transfer-alert" class="alert"></div>
             <div>
-                <label>Recipient Address:</label>
-                <input type="text" id="recipient" style="width:100%; padding:10px; margin:10px 0;">
+                <label>آدرس گیرنده:</label>
+                <input type="text" id="recipient" placeholder="0x...">
             </div>
             <div>
-                <label>Amount:</label>
-                <input type="number" id="amount" style="width:100%; padding:10px; margin:10px 0;">
+                <label>مقدار:</label>
+                <input type="number" id="amount" placeholder="0.00">
             </div>
-            <div style="display:flex; justify-content:space-between;">
-                <button onclick="hideModal()" class="btn">Cancel</button>
+            <div style="display:flex; justify-content:space-between; margin-top:20px;">
+                <button onclick="hideModal('transfer-modal')" class="btn btn-outline">انصراف</button>
                 <button id="confirm-transfer" class="btn">
-                    <span id="transfer-text">Confirm</span>
+                    <span id="transfer-text">تأیید انتقال</span>
                     <span id="transfer-loader" class="loading" style="display:none;"></span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- استفاده از نسخه پایدار ethers.js -->
+    <!-- اسکریپت‌ها -->
     <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"
             integrity="sha512-FDcVY+2Q9gZr1AeeQyRgXbUF+Q8vz+VxXhIqJzO+0KQZf6J2Z6MTXZzTp7PhvA9BdS5Gx1X7X5z5N5V5Q5Q5=="
             crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@walletconnect/client@2.0.0/dist/umd/index.min.js"></script>
 
     <script>
         // متغیرهای سراسری
-        let provider, signer, contract;
+        let provider, signer, contract, walletConnectConnector;
         const contractAddress = "0x697347f8d15bABaD054C84dAe3C8662addaf5c0b";
         const abi = [
             {
@@ -134,19 +222,27 @@
             }
         ];
 
-        // وقتی DOM کاملاً لود شد
+        // وقتی صفحه کاملاً لود شد
         document.addEventListener('DOMContentLoaded', function() {
             // اتصال به متامسک
             document.getElementById('connect-metamask').addEventListener('click', connectMetaMask);
             
-            // دکمه انتقال
-            document.getElementById('transfer-btn').addEventListener('click', showModal);
+            // اتصال به WalletConnect
+            document.getElementById('connect-walletconnect').addEventListener('click', connectWalletConnect);
             
-            // تایید انتقال
+            // دکمه انتقال
+            document.getElementById('transfer-btn').addEventListener('click', () => showModal('transfer-modal'));
+            
+            // دکمه تأیید انتقال
             document.getElementById('confirm-transfer').addEventListener('click', transferTokens);
+            
+            // دکمه افزودن توکن
+            document.getElementById('add-token-btn').addEventListener('click', addTokenToWallet);
         });
 
-        // توابع اصلی
+        // ==================== توابع اصلی ====================
+
+        // اتصال به متامسک
         async function connectMetaMask() {
             const btn = document.getElementById('connect-metamask');
             const loader = document.getElementById('mm-loader');
@@ -154,18 +250,16 @@
             
             try {
                 // نمایش حالت لودینگ
-                btn.disabled = true;
-                text.style.display = 'none';
-                loader.style.display = 'inline-block';
+                toggleLoader(btn, true);
                 
                 // بررسی وجود ethers
                 if (typeof ethers === 'undefined') {
-                    throw new Error('Ethers.js library not loaded');
+                    throw new Error('کتابخانه Ethers.js بارگذاری نشده است');
                 }
                 
                 // بررسی وجود متامسک
                 if (typeof window.ethereum === 'undefined') {
-                    throw new Error('Please install MetaMask');
+                    throw new Error('لطفاً متامسک را نصب کنید');
                 }
                 
                 // ایجاد provider
@@ -177,6 +271,12 @@
                 // دریافت signer
                 signer = provider.getSigner();
                 
+                // بررسی شبکه
+                const network = await provider.getNetwork();
+                if (network.chainId !== 56) {
+                    throw new Error('لطفاً به شبکه اصلی BSC متصل شوید (ChainID: 56)');
+                }
+                
                 // تنظیم قرارداد
                 contract = new ethers.Contract(contractAddress, abi, signer);
                 
@@ -186,62 +286,124 @@
                 // نمایش اطلاعات کیف پول
                 document.getElementById('wallet-info').style.display = 'block';
                 
+                showAlert('اتصال با موفقیت انجام شد', 'success');
+                
+                // گوش دادن به تغییرات حساب
+                window.ethereum.on('accountsChanged', handleAccountsChanged);
+                window.ethereum.on('chainChanged', handleChainChanged);
+                
             } catch (error) {
-                console.error('Connection error:', error);
-                alert('Error: ' + error.message);
+                console.error('خطا در اتصال:', error);
+                showAlert(error.message, 'error');
             } finally {
-                // بازگرداندن حالت عادی دکمه
-                btn.disabled = false;
-                text.style.display = 'inline-block';
-                loader.style.display = 'none';
+                toggleLoader(btn, false);
             }
         }
 
+        // اتصال به WalletConnect
+        async function connectWalletConnect() {
+            const btn = document.getElementById('connect-walletconnect');
+            const loader = document.getElementById('wc-loader');
+            const text = document.getElementById('wc-text');
+            
+            try {
+                toggleLoader(btn, true);
+                
+                // ایجاد اتصال جدید
+                walletConnectConnector = new WalletConnect({
+                    bridge: "https://bridge.walletconnect.org",
+                    qrcodeModal: true
+                });
+                
+                // بررسی اگر قبلاً متصل شده
+                if (!walletConnectConnector.connected) {
+                    await walletConnectConnector.createSession();
+                }
+                
+                // گوش دادن به رویدادها
+                walletConnectConnector.on("connect", async (error, payload) => {
+                    if (error) {
+                        throw error;
+                    }
+                    
+                    // ایجاد provider
+                    provider = new ethers.providers.Web3Provider(walletConnectConnector);
+                    signer = provider.getSigner();
+                    
+                    // تنظیم قرارداد
+                    contract = new ethers.Contract(contractAddress, abi, signer);
+                    
+                    // به‌روزرسانی اطلاعات کیف پول
+                    await updateWalletInfo();
+                    
+                    // نمایش اطلاعات کیف پول
+                    document.getElementById('wallet-info').style.display = 'block';
+                    
+                    showAlert('اتصال WalletConnect با موفقیت انجام شد', 'success');
+                });
+                
+                walletConnectConnector.on("session_update", async (error, payload) => {
+                    if (error) {
+                        throw error;
+                    }
+                    await updateWalletInfo();
+                });
+                
+                walletConnectConnector.on("disconnect", (error, payload) => {
+                    if (error) {
+                        throw error;
+                    }
+                    document.getElementById('wallet-info').style.display = 'none';
+                    showAlert('اتصال WalletConnect قطع شد', 'error');
+                });
+                
+            } catch (error) {
+                console.error('خطا در WalletConnect:', error);
+                showAlert('خطا در اتصال WalletConnect: ' + error.message, 'error');
+            } finally {
+                toggleLoader(btn, false);
+            }
+        }
+
+        // به‌روزرسانی اطلاعات کیف پول
         async function updateWalletInfo() {
             try {
                 const address = await signer.getAddress();
-                const balance = await contract.balanceOf(address);
+                const shrpBalance = await contract.balanceOf(address);
+                const bnbBalance = await provider.getBalance(address);
                 
                 document.getElementById('wallet-address').textContent = 
                     `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
                 document.getElementById('shrp-balance').textContent = 
-                    ethers.utils.formatEther(balance);
+                    ethers.utils.formatEther(shrpBalance);
+                document.getElementById('bnb-balance').textContent = 
+                    ethers.utils.formatEther(bnbBalance).substring(0, 6);
             } catch (error) {
-                console.error('Error updating wallet info:', error);
+                console.error('خطا در به‌روزرسانی اطلاعات:', error);
             }
         }
 
-        function showModal() {
-            document.getElementById('transfer-modal').style.display = 'flex';
-        }
-
-        function hideModal() {
-            document.getElementById('transfer-modal').style.display = 'none';
-        }
-
+        // انتقال توکن
         async function transferTokens() {
             const recipient = document.getElementById('recipient').value.trim();
             const amount = document.getElementById('amount').value.trim();
             const btn = document.getElementById('confirm-transfer');
-            const loader = document.getElementById('transfer-loader');
-            const text = document.getElementById('transfer-text');
             
             try {
                 // اعتبارسنجی
                 if (!ethers.utils.isAddress(recipient)) {
-                    throw new Error('Invalid recipient address');
+                    throw new Error('آدرس گیرنده نامعتبر است');
                 }
                 if (!amount || isNaN(amount) || Number(amount) <= 0) {
-                    throw new Error('Invalid amount');
+                    throw new Error('مقدار انتقال نامعتبر است');
                 }
                 
-                // نمایش حالت لودینگ
-                btn.disabled = true;
-                text.style.display = 'none';
-                loader.style.display = 'inline-block';
+                toggleLoader(btn, true);
                 
                 // انجام انتقال
                 const tx = await contract.transfer(recipient, ethers.utils.parseEther(amount));
+                showAlert('تراکنش ارسال شد. منتظر تأیید بمانید...', 'success');
+                
                 await tx.wait();
                 
                 // به‌روزرسانی موجودی
@@ -250,19 +412,96 @@
                 // پاک کردن فرم و بستن مدال
                 document.getElementById('recipient').value = '';
                 document.getElementById('amount').value = '';
-                hideModal();
+                hideModal('transfer-modal');
                 
-                alert('Transfer successful!');
+                showAlert('انتقال با موفقیت انجام شد', 'success');
                 
             } catch (error) {
-                console.error('Transfer error:', error);
-                alert('Transfer failed: ' + error.message);
+                console.error('خطا در انتقال:', error);
+                showAlert('خطا در انتقال: ' + (error.message || 'خطای ناشناخته'), 'error');
             } finally {
-                // بازگرداندن حالت عادی دکمه
-                btn.disabled = false;
+                toggleLoader(btn, false);
+            }
+        }
+
+        // افزودن توکن به کیف پول
+        async function addTokenToWallet() {
+            try {
+                const wasAdded = await window.ethereum.request({
+                    method: 'wallet_watchAsset',
+                    params: {
+                        type: 'ERC20',
+                        options: {
+                            address: contractAddress,
+                            symbol: 'SHRP',
+                            decimals: 18,
+                            image: 'https://yoursite.com/shrp-logo.png',
+                        },
+                    },
+                });
+                
+                if (wasAdded) {
+                    showAlert('توکن با موفقیت به کیف پول اضافه شد', 'success');
+                } else {
+                    showAlert('افزودن توکن لغو شد', 'error');
+                }
+            } catch (error) {
+                console.error('خطا در افزودن توکن:', error);
+                showAlert('خطا در افزودن توکن: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== توابع کمکی ====================
+
+        function showModal(modalId) {
+            if (!signer) {
+                showAlert('لطفاً ابتدا کیف پول خود را متصل کنید', 'error');
+                return;
+            }
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.getElementById('transfer-alert').className = 'alert';
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alert-box');
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type}`;
+            
+            // مخفی کردن خودکار پیام بعد از 5 ثانیه
+            setTimeout(() => {
+                alertBox.className = 'alert';
+            }, 5000);
+        }
+
+        function toggleLoader(button, isLoading) {
+            const loader = button.querySelector('.loading');
+            const text = button.querySelector('span:not(.loading)');
+            
+            button.disabled = isLoading;
+            if (isLoading) {
+                text.style.display = 'none';
+                loader.style.display = 'inline-block';
+            } else {
                 text.style.display = 'inline-block';
                 loader.style.display = 'none';
             }
+        }
+
+        function handleAccountsChanged(accounts) {
+            if (accounts.length === 0) {
+                document.getElementById('wallet-info').style.display = 'none';
+                showAlert('کیف پول شما قطع شد', 'error');
+            } else {
+                updateWalletInfo();
+            }
+        }
+
+        function handleChainChanged() {
+            window.location.reload();
         }
     </script>
 </body>
