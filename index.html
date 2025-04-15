@@ -370,8 +370,19 @@
         document.getElementById("connect-metamask").addEventListener("click", async () => {
             if (typeof window.ethereum !== "undefined") {
                 try {
+                    try {
                     await window.ethereum.request({ method: "eth_requestAccounts" });
-                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                } catch (error) {
+                    if (error.code === 4001) {
+                        alert("You rejected the connection request.");
+                        return;
+                    } else {
+                        console.error("Error connecting:", error);
+                        alert("Connection failed!");
+                        return;
+                    }
+                }
+                provider = new ethers.providers.Web3Provider(window.ethereum);
                     signer = provider.getSigner();
                     await setupContract();
                     
@@ -399,7 +410,7 @@
         
         // تابع اتصال به WalletConnect
         document.getElementById("connect-walletconnect").addEventListener("click", async () => {
-            const walletConnectProvider = new WalletConnectProvider({
+            const walletConnectProvider = new WalletConnectProvider.default({
                 rpc: {
                     56: "https://bsc-dataseed.binance.org/", // BSC Mainnet
                     97: "https://data-seed-prebsc-1-s1.binance.org:8545/" // BSC Testnet
@@ -507,7 +518,8 @@
             const ctx = document.getElementById('price-chart').getContext('2d');
             
             // داده‌های نمونه (در عمل باید از API دریافت شود)
-            priceChart = new Chart(ctx, {
+            if (priceChart) priceChart.destroy();
+    priceChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -585,7 +597,7 @@
                 alert("Transaction sent! Waiting for confirmation...");
                 
                 await tx.wait();
-                alert("Transaction confirmed!");
+                alert("Transaction confirmed!\n\nView on BscScan: https://bscscan.com/tx/" + tx.hash);
                 await updateWalletInfo();
             } catch (error) {
                 console.error("Transfer error:", error);
