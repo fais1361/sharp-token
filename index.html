@@ -335,6 +335,27 @@
     </div>
 
     <script>
+        // توابع مدال باید در سطح سراسری تعریف شوند
+        function showTransferModal() {
+            if (!signer) {
+                alert("Please connect your wallet first!");
+                return;
+            }
+            document.getElementById("transfer-modal").style.display = "flex";
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        function showSwapModal() {
+            alert("Swap functionality will be implemented soon!");
+        }
+
+        function showStakeModal() {
+            alert("Staking functionality will be implemented soon!");
+        }
+
         window.addEventListener('load', () => {
             // تنظیمات اولیه
             let provider, signer, contract;
@@ -364,46 +385,4 @@
 
             // تابع اتصال به MetaMask
             document.getElementById("connect-metamask").addEventListener("click", async () => {
-                if (typeof window.ethereum !== "undefined") {
-                    try {
-                        await window.ethereum.request({ method: "eth_requestAccounts" });
-                        provider = new ethers.providers.Web3Provider(window.ethereum);
-                        signer = provider.getSigner();
-                        await setupContract();
-
-                        // گوش دادن به تغییر حساب
-                        window.ethereum.on("accountsChanged", async (accounts) => {
-                            if (accounts.length > 0) {
-                                await updateWalletInfo();
-                            } else {
-                                document.getElementById("wallet-info").style.display = "none";
-                            }
-                        });
-
-                        // گوش دادن به تغییر شبکه
-                        window.ethereum.on("chainChanged", () => {
-                            window.location.reload();
-                        });
-                    } catch (error) {
-                        console.error("Error connecting:", error);
-                        alert("Connection failed!");
-                    }
-                } else {
-                    alert("Please install MetaMask!");
-                }
-            });
-
-            // تابع اتصال به WalletConnect
-            document.getElementById("connect-walletconnect").addEventListener("click", async () => {
-                const walletConnectProvider = new WalletConnectProvider({
-                    rpc: {
-                        56: "https://bsc-dataseed.binance.org/", // BSC Mainnet
-                        97: "https://data-seed-prebsc-1-s1.binance.org:8545/" // BSC Testnet
-                    },
-                    chainId: 56 // BSC Mainnet
-                });
-
-                try {
-                    await walletConnectProvider.enable();
-                    provider = new ethers.providers.Web3Provider(walletConnectProvider);
-                    signer = provider.getSign
+                if (typeof window
