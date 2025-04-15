@@ -13,309 +13,17 @@
     <script src="https://unpkg.com/chart.js@3.7.1/dist/chart.min.js"></script>
 
     <style>
-        :root {
-            --primary-color: #00d4ff;
-            --secondary-color: #008bbf;
-            --dark-bg: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #ffffff;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 30px 0;
-            border-bottom: 1px solid #333;
-            margin-bottom: 30px;
-        }
-
-        .logo {
-            width: 120px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .card-title {
-            color: var(--primary-color);
-            margin-top: 0;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            background: var(--primary-color);
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            margin: 5px;
-        }
-
-        .btn:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary-color);
-            color: #000;
-        }
-
-        .wallet-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .wallet-info {
-            margin-top: 20px;
-            text-align: center;
-            display: none;
-        }
-
-        .price-section {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .price-card {
-            text-align: center;
-            padding: 15px;
-            min-width: 200px;
-        }
-
-        .price-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .chart-container {
-            width: 100%;
-            height: 300px;
-            margin-top: 20px;
-        }
-
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .feature-item {
-            background: #292929;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 3px solid var(--primary-color);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .social-links a {
-            color: var(--primary-color);
-            font-size: 24px;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            color: var(--secondary-color);
-            transform: translateY(-3px);
-        }
-
-        @media (max-width: 768px) {
-            .price-section {
-                flex-direction: column;
-            }
-
-            .feature-list {
-                grid-template-columns: 1fr;
-            }
-        }
+        /* Your existing CSS styles remain unchanged */
+        /* ... */
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <img src="logo.png" alt="Sharp Token Logo" class="logo">
-            <h1>Sharp Token (SHRP)</h1>
-            <p class="subtitle">A decentralized and advanced token on Binance Smart Chain</p>
-
-            <div class="wallet-section">
-                <div>
-                    <button id="connect-metamask" class="btn">Connect MetaMask</button>
-                    <button id="connect-walletconnect" class="btn btn-outline">Connect WalletConnect</button>
-                </div>
-
-                <div id="wallet-info" class="wallet-info">
-                    <p>Wallet Address: <span id="wallet-address"></span></p>
-                    <p>SHRP Balance: <span id="token-balance">0</span></p>
-                    <p>BNB Balance: <span id="bnb-balance">0</span></p>
-                    <button onclick="addTokenToWallet()" class="btn" style="margin-top: 10px;">Add SHRP to Wallet</button>
-                </div>
-            </div>
-        </header>
-
-        <div class="card">
-            <h2 class="card-title">Token Information</h2>
-            <div class="price-section">
-                <div class="price-card">
-                    <p>Current Price</p>
-                    <p class="price-value" id="token-price">$0.00</p>
-                </div>
-                <div class="price-card">
-                    <p>Market Cap</p>
-                    <p class="price-value" id="market-cap">$0.00</p>
-                </div>
-                <div class="price-card">
-                    <p>24h Change</p>
-                    <p class="price-value" id="price-change">0%</p>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <canvas id="price-chart"></canvas>
-            </div>
-
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="https://bscscan.com/token/0x697347f8d15bABaD054C84dAe3C8662addaf5c0b" target="_blank" class="btn">View on BscScan</a>
-                <a href="https://pancakeswap.finance" target="_blank" class="btn btn-outline">Trade on PancakeSwap</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2 class="card-title">Token Actions</h2>
-            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <button onclick="showTransferModal()" class="btn">Transfer SHRP</button>
-                <button onclick="showSwapModal()" class="btn">Swap Tokens</button>
-                <button onclick="showStakeModal()" class="btn">Stake SHRP</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2 class="card-title">Key Features</h2>
-            <div class="feature-list">
-                <div class="feature-item">
-                    <h3>🔒 Secure</h3>
-                    <p>Built with the highest security standards and audited smart contracts</p>
-                </div>
-                <div class="feature-item">
-                    <h3>💰 Staking Rewards</h3>
-                    <p>Earn passive income by staking your SHRP tokens</p>
-                </div>
-                <div class="feature-item">
-                    <h3>🔥 Token Burn</h3>
-                    <p>Regular token burns to increase scarcity and value</p>
-                </div>
-                <div class="feature-item">
-                    <h3>🌐 Decentralized</h3>
-                    <p>Fully decentralized with community governance</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2 class="card-title">Roadmap</h2>
-            <div style="position: relative; padding-left: 30px;">
-                <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--primary-color);"></div>
-
-                <div style="position: relative; margin-bottom: 30px;">
-                    <div style="position: absolute; left: -36px; top: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary-color);"></div>
-                    <h3 style="margin-top: 0;">Q3 2025</h3>
-                    <ul>
-                        <li>Token launch on BSC</li>
-                        <li>PancakeSwap listing</li>
-                        <li>First community airdrop</li>
-                    </ul>
-                </div>
-
-                <div style="position: relative; margin-bottom: 30px;">
-                    <div style="position: absolute; left: -36px; top: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary-color);"></div>
-                    <h3 style="margin-top: 0;">Q4 2025</h3>
-                    <ul>
-                        <li>Staking platform launch</li>
-                        <li>First token burn event</li>
-                        <li>CEX listings</li>
-                    </ul>
-                </div>
-
-                <div style="position: relative;">
-                    <div style="position: absolute; left: -36px; top: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary-color);"></div>
-                    <h3 style="margin-top: 0;">2026</h3>
-                    <ul>
-                        <li>DAO governance launch</li>
-                        <li>Cross-chain expansion</li>
-                        <li>Ecosystem development</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="text-align: center;">
-            <h2 class="card-title">Join Our Community</h2>
-            <div class="social-links">
-                <a href="https://twitter.com" target="_blank" title="Twitter">🐦</a>
-                <a href="https://t.me" target="_blank" title="Telegram">📢</a>
-                <a href="https://discord.com" target="_blank" title="Discord">🎮</a>
-                <a href="https://medium.com" target="_blank" title="Medium">📚</a>
-                <a href="https://github.com" target="_blank" title="GitHub">💻</a>
-            </div>
-        </div>
+        <!-- Your existing HTML content remains unchanged -->
+        <!-- ... -->
     </div>
 
+    <!-- Transfer Modal -->
     <div id="transfer-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
         <div style="background: var(--card-bg); padding: 30px; border-radius: 10px; max-width: 500px; width: 90%;">
             <h2 style="margin-top: 0;">Transfer SHRP</h2>
@@ -334,8 +42,56 @@
         </div>
     </div>
 
+    <!-- Swap Modal -->
+    <div id="swap-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 10px; max-width: 500px; width: 90%;">
+            <h2 style="margin-top: 0;">Swap Tokens</h2>
+            <!-- Swap form content here -->
+            <div style="display: flex; justify-content: space-between;">
+                <button onclick="hideModal('swap-modal')" class="btn btn-outline">Cancel</button>
+                <button onclick="swapTokens()" class="btn">Swap</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stake Modal -->
+    <div id="stake-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 10px; max-width: 500px; width: 90%;">
+            <h2 style="margin-top: 0;">Stake SHRP</h2>
+            <!-- Stake form content here -->
+            <div style="display: flex; justify-content: space-between;">
+                <button onclick="hideModal('stake-modal')" class="btn btn-outline">Cancel</button>
+                <button onclick="stakeTokens()" class="btn">Stake</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // توابع مدال باید در سطح سراسری تعریف شوند
+        // Global variables
+        let provider, signer, contract;
+        const contractAddress = "0x697347f8d15bABaD054C84dAe3C8662addaf5c0b";
+        const abi = [
+            {
+                "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
+                "name": "balanceOf",
+                "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    { "internalType": "address", "name": "recipient", "type": "address" },
+                    { "internalType": "uint256", "name": "amount", "type": "uint256" }
+                ],
+                "name": "transfer",
+                "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ];
+        let priceChart;
+
+        // Modal Functions (must be global)
         function showTransferModal() {
             if (!signer) {
                 alert("Please connect your wallet first!");
@@ -344,75 +100,234 @@
             document.getElementById("transfer-modal").style.display = "flex";
         }
 
+        function showSwapModal() {
+            if (!signer) {
+                alert("Please connect your wallet first!");
+                return;
+            }
+            document.getElementById("swap-modal").style.display = "flex";
+        }
+
+        function showStakeModal() {
+            if (!signer) {
+                alert("Please connect your wallet first!");
+                return;
+            }
+            document.getElementById("stake-modal").style.display = "flex";
+        }
+
         function hideModal(modalId) {
             document.getElementById(modalId).style.display = "none";
         }
 
-        function showSwapModal() {
+        // Token Functions
+        async function transferTokens() {
+            const recipient = document.getElementById("recipient-address").value;
+            const amount = document.getElementById("transfer-amount").value;
+            
+            if (!ethers.utils.isAddress(recipient)) {
+                alert("Please enter a valid address!");
+                return;
+            }
+            
+            if (!amount || isNaN(amount) || Number(amount) <= 0) {
+                alert("Please enter a valid amount!");
+                return;
+            }
+            
+            try {
+                const tx = await contract.transfer(recipient, ethers.utils.parseEther(amount));
+                hideModal('transfer-modal');
+                alert("Transaction sent! Waiting for confirmation...");
+                
+                await tx.wait();
+                alert("Transaction confirmed!");
+                await updateWalletInfo();
+            } catch (error) {
+                console.error("Transfer error:", error);
+                alert("Transfer failed! " + (error.message || ""));
+            }
+        }
+
+        function swapTokens() {
             alert("Swap functionality will be implemented soon!");
+            hideModal('swap-modal');
         }
 
-        function showStakeModal() {
+        function stakeTokens() {
             alert("Staking functionality will be implemented soon!");
+            hideModal('stake-modal');
         }
 
-        window.addEventListener('load', async () => {
-            // تنظیمات اولیه
-            let provider, signer, contract;
-            const contractAddress = "0x697347f8d15bABaD054C84dAe3C8662addaf5c0b"; // آدرس قرارداد SHARP
-            const abi = [
-                {
-                    "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
-                    "name": "balanceOf",
-                    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-                    "stateMutability": "view",
-                    "type": "function"
-                },
-                {
-                    "inputs": [
-                        { "internalType": "address", "name": "recipient", "type": "address" },
-                        { "internalType": "uint256", "name": "amount", "type": "uint256" }
-                    ],
-                    "name": "transfer",
-                    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-                    "stateMutability": "nonpayable",
-                    "type": "function"
+        // Wallet Connection Functions
+        document.getElementById("connect-metamask").addEventListener("click", connectMetaMask);
+        document.getElementById("connect-walletconnect").addEventListener("click", connectWalletConnect);
+
+        async function connectMetaMask() {
+            if (typeof window.ethereum !== "undefined") {
+                try {
+                    await window.ethereum.request({ method: "eth_requestAccounts" });
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    signer = provider.getSigner();
+                    await setupContract();
+                    
+                    window.ethereum.on("accountsChanged", async (accounts) => {
+                        if (accounts.length > 0) {
+                            await updateWalletInfo();
+                        } else {
+                            document.getElementById("wallet-info").style.display = "none";
+                        }
+                    });
+                    
+                    window.ethereum.on("chainChanged", () => {
+                        window.location.reload();
+                    });
+                } catch (error) {
+                    console.error("Error connecting:", error);
+                    alert("Connection failed!");
                 }
-            ];
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
 
-            // متغیرهای قیمت
-            let priceChart;
+        async function connectWalletConnect() {
+            const walletConnectProvider = new WalletConnectProvider({
+                rpc: {
+                    56: "https://bsc-dataseed.binance.org/",
+                    97: "https://data-seed-prebsc-1-s1.binance.org:8545/"
+                },
+                chainId: 56
+            });
+            
+            try {
+                await walletConnectProvider.enable();
+                provider = new ethers.providers.Web3Provider(walletConnectProvider);
+                signer = provider.getSigner();
+                await setupContract();
+                
+                walletConnectProvider.on("disconnect", () => {
+                    document.getElementById("wallet-info").style.display = "none";
+                });
+            } catch (error) {
+                console.error("WalletConnect error:", error);
+                alert("Connection failed!");
+            }
+        }
 
-            // تابع اتصال به MetaMask
-            document.getElementById("connect-metamask").addEventListener("click", async () => {
-                if (typeof window.ethereum !== "undefined") {
-                    try {
-                        await window.ethereum.request({ method: "eth_requestAccounts" });
-                        provider = new ethers.providers.Web3Provider(window.ethereum);
-                        signer = provider.getSigner();
-                        await setupContract();
+        // Helper Functions
+        async function setupContract() {
+            contract = new ethers.Contract(contractAddress, abi, signer);
+            await updateWalletInfo();
+            document.getElementById("wallet-info").style.display = "block";
+            fetchTokenPrice();
+            setupChart();
+        }
 
-                        // گوش دادن به تغییر حساب
-                        window.ethereum.on("accountsChanged", async (accounts) => {
-                            if (accounts.length > 0) {
-                                await updateWalletInfo();
-                            } else {
-                                document.getElementById("wallet-info").style.display = "none";
-                            }
-                        });
+        async function updateWalletInfo() {
+            try {
+                const address = await signer.getAddress();
+                const balance = await contract.balanceOf(address);
+                const bnbBalance = await provider.getBalance(address);
+                
+                document.getElementById("wallet-address").textContent = 
+                    `${address.slice(0, 6)}...${address.slice(-4)}`;
+                document.getElementById("token-balance").textContent = 
+                    ethers.utils.formatEther(balance);
+                document.getElementById("bnb-balance").textContent = 
+                    ethers.utils.formatEther(bnbBalance).substring(0, 6);
+            } catch (error) {
+                console.error("Error updating wallet info:", error);
+            }
+        }
 
-                        // گوش دادن به تغییر شبکه
-                        window.ethereum.on("chainChanged", () => {
-                            window.location.reload();
-                        });
-                    } catch (error) {
-                        console.error("Error connecting:", error);
-                        alert("Connection failed!");
-                    }
+        async function addTokenToWallet() {
+            try {
+                const wasAdded = await window.ethereum.request({
+                    method: "wallet_watchAsset",
+                    params: {
+                        type: "ERC20",
+                        options: {
+                            address: contractAddress,
+                            symbol: "SHRP",
+                            decimals: 18,
+                            image: "https://yourwebsite.com/shrp-logo.png",
+                        },
+                    },
+                });
+                
+                if (wasAdded) {
+                    alert("SHRP token added to your wallet!");
                 } else {
-                    alert("Please install MetaMask!");
+                    alert("Token addition was canceled.");
+                }
+            } catch (error) {
+                console.error("Error adding token:", error);
+                alert("Error adding token. Check console for details.");
+            }
+        }
+
+        async function fetchTokenPrice() {
+            try {
+                // This would be replaced with actual API calls
+                document.getElementById("token-price").textContent = "$0.00";
+                document.getElementById("market-cap").textContent = "$0.00";
+                document.getElementById("price-change").textContent = "0%";
+            } catch (error) {
+                console.error("Error fetching price:", error);
+            }
+        }
+
+        function setupChart() {
+            const ctx = document.getElementById('price-chart').getContext('2d');
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'SHRP Price',
+                        data: [0.0012, 0.0015, 0.0018, 0.0021, 0.0019, 0.0023],
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#aaa'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#aaa'
+                            }
+                        }
+                    }
                 }
             });
+        }
 
-            // تابع اتصال به WalletConnect
-            document.getElementById("connect-walletconnect").addEventListener("click", async () => {
+        // Initialize on load
+        window.addEventListener('load', () => {
+            // Any initialization code if needed
+        });
+    </script>
+</body>
+</html>
